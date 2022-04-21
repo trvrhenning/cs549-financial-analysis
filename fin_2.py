@@ -11,10 +11,9 @@ rt_data = torch.tensor(raw_data.values)
 
 #Check if values were loaded correctly
 print()
-print("Checking if rt_data is properly loaded into tensor: \n")
+print("Checking if rt_data is properly loaded into tensor: ")
 print("This value should be 18 : {}".format(rt_data.size(dim = 1))) #should be 18
 print("This value should be 6.0 : {}".format(rt_data[0][0].item())) #should be 6 
-print()
 
 #Slice first unneeded row value column from csv data
 data = rt_data[:rt_data.size(dim = 0),1:rt_data.size(dim =1)] #tensor of size ([225010,17]) 
