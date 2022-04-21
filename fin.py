@@ -5,7 +5,7 @@ import csv
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression 
-from sklearn.svm import LinearSVR
+import sklearn.svm as svm
 from sklearn.neural_network import MLPClassifier 
 from sklearn.preprocessing import StandardScaler 
 import matplotlib.pyplot as plt 
