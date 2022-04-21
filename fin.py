@@ -15,6 +15,7 @@ readerlist = list(reader)
 rowcount = len(readerlist)
 colcount = len(readerlist[0])
 
+#check if loaded correctly
 data = np.array(readerlist)
 print(data.shape) #225011, 18 
 print(data[0,3]) #should be target column
