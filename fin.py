@@ -11,39 +11,45 @@ raw_data = open('targetfirm_prediction_dataset_small.csv', 'r', newline = '')
 reader  = csv.reader(raw_data, delimiter = ',' , quoting  = csv.QUOTE_NONE)
 readerlist = list(reader)
 
-#get dimmensions
-rowcount = len(readerlist)
-colcount = len(readerlist[0])
-
 #check if loaded correctly
 data = np.array(readerlist)
-print(data.shape) #225011, 18 
+print("Checking extraction shape: {}".format(data.shape)) #array of (225011, 18)
 print(data[0,3]) #should be target column
 
-#LOGISTIC REGRESSION 
-#First set up X and Y, Then , X_train, Y_train, X_test, Y_test 
+#First implement Logistic Regression
 
+#Set up X and Y, Then , X_train, Y_train, X_test, Y_test 
 #Extract features into an array of size (220510,14)
 X_data = data[1:data.shape[0],4:18]
 print(X_data[0,0]) #check if sliced correctly 
-print(X_data.shape)
+
+#transpose X 
+X_data = X_data.T
+print("X_data Shape : {}".format(X_data.shape))
 
 #Extract Ground truth data, array of shape (1, 220510)
-Y_data = data[1:data.shape[0],3] 
+#remove title row before Transpose
+pure_data = data[1:data.shape[0],:data.shape[1]] #array of (225010, 18)
 
+#transpose for Y
+Y_data = pure_data.T
 
-Y_data = Y_data.reshape((1, Y_data.shape[0]))
-print(Y_data.shape) 
-
+#transfrom one hot encoded target column
+Y_data = np.argmax(Y_data, axis=0).reshape((1, Y_data.shape[1]))
 
 #Pick values where financial incidents occured
-X_cat0 = X_data[np.where(Y_data == 0)]
-Y_cat0 = Y_data[np.where(Y_data == 0)]
-X_cat1 = X_data[np.where(Y_data == 1)]
-Y_cat1 = Y_data[np.where(Y_data == 1)] 
+X_cat0 = X_data[:, np.where(Y_data == 0)[1]]
+Y_cat0 = Y_data[:, np.where(Y_data == 0)[1]]
+X_cat1 = X_data[:, np.where(Y_data == 1)[1]]
+Y_cat1 = Y_data[:, np.where(Y_data == 1)[1]]
 
-# Convert the label of Y_cat0 to 0, and Y_cat1 to 1
+print("Y_data shape: {}".format(Y_data.shape)) 
+
+#Convert the label of Y_cat0 to 0, and Y_cat1 to 1
 Y_cat0 = np.zeros_like(Y_cat0)
 Y_cat1 = np.ones_like(Y_cat1)
 
-print(Y_cat1.shape)
+print("Y_cat0 shape : {}".format(Y_cat0.shape))
+print("Y_cat1 shape : {}".format(Y_cat1.shape))
+print("X_cat0 shape : {}".format(X_cat0.shape))
+print("X_cat1 shape : {}".format(X_cat1.shape))
