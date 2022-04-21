@@ -11,3 +11,5 @@ data_tensor = torch.tensor(raw_data.values)
 
 print (data_tensor.size(dim = 1)) #should be 18
 print (data_tensor[0][0].item()) #should be 6 
+
+#Preprocess data 
