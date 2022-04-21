@@ -83,7 +83,6 @@ profile_default/
 ipython_config.py
 
 #Jupyter Lab 
-
 .ipynb_checkpoints
 
 #vscode debugging files 
