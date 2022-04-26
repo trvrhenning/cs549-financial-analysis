@@ -5,7 +5,7 @@ import csv
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression 
-import sklearn.svm as svm
+from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier 
 from sklearn.preprocessing import StandardScaler 
 from sklearn import metrics
@@ -40,7 +40,7 @@ Y_data = data[1:data.shape[0],3]
 print("Y_data Shape: {}".format(Y_data.shape))
 
 #Create X, Y Train and X, Y Test 
-X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, test_size = 0.3, random_state = 2, shuffle = True)
+X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, test_size = 0.35, shuffle = True)
 
 #Check dimensions of train and test sets 
 print("X_train shape: {}".format(X_train.shape))
@@ -60,7 +60,7 @@ Y_test = np.array(Y_test, dtype = float)
 
 #Implement 3 Sci-kit Models Below
 
-#Still unsure about performance or correctness of this model!! No true positive in matrices... 
+#Still unsure about performance or correctness of these models!! No true positive in confusion matrices!!
 
 #1. Logistic Regression
 #Initialiaze scikit model 
@@ -71,6 +71,7 @@ l_reg.fit(X_train, Y_train)
 
 y_pred = l_reg.predict(X_test)
 
+
 #Evalaute Logistic Regression Model 
 cm = metrics.confusion_matrix(Y_test, y_pred) 
 
@@ -78,7 +79,7 @@ print(cm)
 
 #2. SVM 
 #Initialize scikit model 
-svm_model = svm.SVC()
+svm_model = SVC()
 
 #Fit data to our model and make predictions
 svm_model.fit(X_train,Y_train)
