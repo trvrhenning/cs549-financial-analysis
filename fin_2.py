@@ -23,4 +23,6 @@ print(data.size())
 print("This value should be 1004 : {}".format(data[0][0]))
 print("This value should be 2000 : {}".format(data[0][1]))
 
-#Preprocess data tensor further below if necessary 
+#Create train and test sets
+
+#Create RNN class 
