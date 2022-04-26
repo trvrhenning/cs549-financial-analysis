@@ -40,7 +40,7 @@ Y_data = data[1:data.shape[0],3]
 print("Y_data Shape: {}".format(Y_data.shape))
 
 #Create X, Y Train and X, Y Test 
-X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, test_size = 0.4, shuffle = True)
+X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, test_size = 0.35, shuffle = True)
 
 #Check dimensions of train and test sets 
 print("X_train shape: {}".format(X_train.shape))
@@ -74,7 +74,7 @@ y_pred = l_reg.predict(X_test)
 #Evalaute Logistic Regression Model 
 cm = metrics.confusion_matrix(Y_test, y_pred) 
 accuracy = (cm[0,0] + cm[1,1])/len(Y_test)
-print("Confusion Matrix for Logistic Regression Model : \n{}".format(cm))
+print("Confusion Matrix for Logistic Regression Model : \n{}".format(cm)) 
 print("Logistic Regression Model Accuracy : {0:.2%}".format(accuracy))
 
 #2. SVM 
