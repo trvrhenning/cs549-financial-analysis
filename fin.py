@@ -60,7 +60,7 @@ y_pred = l_reg.predict(X_test)
 
 #Evalaute Logistic Regression Model 
 cm = metrics.confusion_matrix(Y_test, y_pred) 
-accuracy = l_reg.score(X_test, Y_test) #(cm[0,0] + cm[1,1])/len(Y_test)
+accuracy = l_reg.score(X_test, Y_test) 
 print("Confusion Matrix for Logistic Regression Model : \n{}".format(cm)) 
 print("Logistic Regression Model Accuracy : {0:.2%}".format(accuracy))
 
