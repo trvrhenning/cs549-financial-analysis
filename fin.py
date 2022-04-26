@@ -100,7 +100,7 @@ mlp_model.fit(X_train, Y_train)
 y_pred_2 = mlp_model.predict(X_test)
 
 #Evaluate Nueral Network Model  
-cm_2 = metrics.confusion_matrix(Y_test, y_pred_2)
+cm_2 = metrics.confusion_matrix(Y_test, y_pred_2) #Hidden layer default at (100,)
 accuracy_2 = (cm_2[0,0] + cm_2[1,1])/len(Y_test)
 print("Confusion Matrix for Neural Network Model : \n{}".format(cm_2))
 print("Neural Network Model Accuracy : {0:.2%}".format(accuracy_2))
