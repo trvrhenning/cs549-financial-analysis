@@ -4,9 +4,12 @@
 import torch 
 import torch.nn as nn
 import pandas as pd 
+from sklearn.model_selection import train_test_split
 
 #First Load data from CSV File using pandas this time for ease of use with pytorch
 raw_data = pd.read_csv('targetfirm_prediction_dataset_small.csv')
+
+# Need to Create train and test sets before this line
 rt_data = torch.tensor(raw_data.values)
 
 #Check if values were loaded correctly
@@ -22,7 +25,5 @@ data = rt_data[:rt_data.size(dim = 0),1:rt_data.size(dim =1)] #tensor of size ([
 print(data.size()) 
 print("This value should be 1004 : {}".format(data[0][0]))
 print("This value should be 2000 : {}".format(data[0][1]))
-
-#Create train and test sets
 
 #Create RNN class 
