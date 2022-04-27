@@ -50,7 +50,8 @@ X_test = scaler.transform(X_test)
 #Raw data processed!!
 
 #Implement 3 Sci-kit Models and evaluate their performances Below
-#Need to optimize performance of models!
+#Need to optimize performance of models! 
+#Note: make smaller subset of data where amount of positive and negative target values are more equal 
 
 #1. Logistic Regression
 #Initialiaze model and make predictions on test data 
