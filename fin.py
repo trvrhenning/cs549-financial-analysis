@@ -10,6 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier  
+from imblearn.under_sampling import RandomUnderSampler, ClusterCentroids, NearMiss
 
 #First Load data from CSV File 
 raw_data = open('targetfirm_prediction_dataset_small.csv', 'r', newline = '')
@@ -47,16 +48,20 @@ scaler = preprocessing.StandardScaler().fit(X_train)
 X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
-#Raw data processed!!
+#Under sample data to even out imbalance of positive and negative outcomes
+#Use different UnderSampling methods sampling_strategy rates for best model outcomes!
+rus = RandomUnderSampler(sampling_strategy = 0.8, random_state = 42)
+X_train_resample, Y_train_resample = rus.fit_resample(X_train, Y_train)
+print("X_train resampled shape: {}".format(X_train_resample.shape))
+print("Y_train resampled shape: {}".format(Y_train_resample.shape))
 
-#Implement 3 Sci-kit Models and evaluate their performances Below
-#Need to optimize performance of models! 
-#Note: make smaller subset of data where amount of positive and negative target values are more equal 
+
+#Implement 3 Sci-kit Models and evaluate their performances Below 
 
 #1. Logistic Regression
 #Initialiaze model and make predictions on test data 
 l_reg = LogisticRegression() 
-l_reg.fit(X_train,Y_train)
+l_reg.fit(X_train_resample,Y_train_resample)
 y_pred = l_reg.predict(X_test)
 
 #Evalaute Logistic Regression Model 
@@ -67,7 +72,7 @@ print("Logistic Regression Model Accuracy : {0:.2%}".format(accuracy))
 
 #2. SVM , this one may take some time to run
 svm_model = SVC()
-svm_model.fit(X_train,Y_train)
+svm_model.fit(X_train_resample,Y_train_resample)
 y_pred_1 = svm_model.predict(X_test)
 
 #Evaluate SVM model
@@ -77,8 +82,8 @@ print("Confusion Matrix for SVM Model : \n{}".format(cm_1))
 print("SVM Model Accuracy : {0:.2%}".format(accuracy_1))
 
 #3. Feed forward Neural Network
-mlp_model = MLPClassifier() #Hidden layer default at (100,)
-mlp_model.fit(X_train, Y_train)
+mlp_model = MLPClassifier(max_iter = 1000) #Hidden layer default at (100,)
+mlp_model.fit(X_train_resample,Y_train_resample)
 y_pred_2 = mlp_model.predict(X_test)
 
 #Evaluate Neural Network Model  
