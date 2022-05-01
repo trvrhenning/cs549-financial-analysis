@@ -53,9 +53,11 @@ X_train_resample, Y_train_resample = rus.fit_resample(X_train, Y_train)
 print("X_train resampled shape: {}".format(X_train_resample.shape))
 print("Y_train resampled shape: {}".format(Y_train_resample.shape))
 
+
 #Implement 3 Sci-kit Models and evaluate their performances Below 
 
 start = time.time()
+
 #1. Logistic Regression
 #Initialiaze model and make predictions on test data 
 l_reg = LogisticRegression() 
