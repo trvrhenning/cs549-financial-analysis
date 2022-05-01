@@ -1,8 +1,6 @@
-#CS 549 Final Project, Financial Analysis, Group 23
-#This python file implements 3 non sequential machine learning models on financial data from a given csv file
-
 import csv
 import numpy as np
+import time
 import matplotlib.pyplot as plt 
 from sklearn import preprocessing
 from sklearn import metrics
@@ -50,14 +48,14 @@ X_test = scaler.transform(X_test)
 
 #Under sample data to even out imbalance of positive and negative outcomes
 #Use different UnderSampling methods sampling_strategy rates for best model outcomes!
-rus = RandomUnderSampler(sampling_strategy = 0.8, random_state = 42)
+rus = RandomUnderSampler(sampling_strategy = 0.6, random_state = 42)
 X_train_resample, Y_train_resample = rus.fit_resample(X_train, Y_train)
 print("X_train resampled shape: {}".format(X_train_resample.shape))
 print("Y_train resampled shape: {}".format(Y_train_resample.shape))
 
-
 #Implement 3 Sci-kit Models and evaluate their performances Below 
 
+start = time.time()
 #1. Logistic Regression
 #Initialiaze model and make predictions on test data 
 l_reg = LogisticRegression() 
@@ -90,4 +88,8 @@ y_pred_2 = mlp_model.predict(X_test)
 cm_2 = metrics.confusion_matrix(Y_test, y_pred_2) 
 accuracy_2 = mlp_model.score(X_test, Y_test)
 print("Confusion Matrix for Neural Network Model : \n{}".format(cm_2))
-print("Neural Network Model Accuracy : {0:.2%}".format(accuracy_2))
+print("Neural Network Model Accuracy : {0:.2%}".format(accuracy_2))   
+
+end = time.time()
+
+print("Total time for all 3 models to run : {:.2f}".format(end - start)) 
