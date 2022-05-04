@@ -15,37 +15,39 @@ raw_data = pd.read_csv('targetfirm_prediction_dataset_small.csv')
 data = np.array(raw_data.values)
 #slice unneeded column
 data = data[:,1:data.shape[1]]
-#company id columns
-print(data[0,0])
-#split by company ID or cyclical structure of years
 
+#split data by company ID
 def split_data(data_m):
-    #try by company id
-    #list of arrays seperated by company
-    new_data_m = [ ] 
-    #seperated list of a unique company
-    bucket = [20]
+    new_data_m = [ ]
+    bucket = [20] 
     company_id = data_m[0,0]
-    i = 0 
+    idx = 0 
     headidx = 0
-    while (i <  data_m.shape[0]):
-        if (company_id == data_m[i,0]):
-            i+=1 
+    while (idx <  data_m.shape[0]):
+        if (company_id == data_m[idx,0]):
+            idx+=1 
         else:
-            company_id = data_m[i,0]
-            new_data_m.append(data_m[headidx:i,:]) 
-            headidx = i
+            company_id = data_m[idx,0]
+            new_data_m.append(data_m[headidx:idx,:]) 
+            headidx = idx
             bucket.clear()
-            i+=1
+            idx+=1 
+    #returns list of numpy arrays seperated by company id
     return new_data_m
 
 #list of numpy arrays seperated by company id
 new_data = np.array(split_data(data), dtype = object)
-print(f"Check values: {new_data[0].shape}")
+test_size = int(np.round(0.3*new_data.shape[0]))
+train_data = new_data[:(new_data.shape[0] - test_size)]
+test_data = new_data[(new_data.shape[0] - test_size):new_data.shape[0]]
+print(f"Check train data shape: {train_data.shape}")
 
+#train_data[i].shape and test_data[i].shape = (samples_each_company, features)
+#need to slice each companys data ie. train_data[i] by a max sequence length, but smaller if less length than max sequence
+#features, 1-3 are company id year and target val, thus we dont wnat those in calculations for training
 
-#now seperate by max sequence length and we can then convert each sequence into tensors 
-#below code will need to be changed 
+#below code will need to be changed, but process of converting to tensors should be similar. 
+
 X_data = np.concatenate((data[:,1:3],data[:,4:18]), axis = 1) 
 Y_data = data[:,3]
 print()
