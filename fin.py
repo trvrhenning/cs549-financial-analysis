@@ -1,5 +1,5 @@
 #CS 549 Final Project, Financial Analysis, Group 23
-#This python file implements 3 non sequential machine learning models on financial incidents from given csv file
+#This python file implements 3 non-sequential machine learning models on financial incidents from given csv file
 
 import csv
 import numpy as np
