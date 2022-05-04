@@ -57,8 +57,7 @@ print("X_train resampled shape: {}".format(X_train_resample.shape))
 print("Y_train resampled shape: {}".format(Y_train_resample.shape))
 
 
-#Implement 3 Sci-kit Models and evaluate their performances Below 
-
+#Implement 3 Sci-kit Models and evaluate their performances Below
 start = time.time()
 
 #1. Logistic Regression
