@@ -78,5 +78,38 @@ print("Y_test shape: {}".format(Y_test.size()))
 
 #Create RNN classes
 
+input_size = 14
+hidden_size = 100 
+num_layers = 2 
+output_size = 1 
+num_epochs = 100 
+
 #class LSTM
-#class GRU 
+class LSTM(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, output_size)
+    super(LSTM, self).__init__()
+    self.hidden_size = hidden_size 
+    self input_size = input_size
+    
+    self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+    self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self,x): 
+        #fill in code here 
+        pass
+    
+#class GRU
+
+class GRU(nn.Module):
+    def __init__(self, input, hidden_size,num_layers, output_size)
+    super(GRU, self).__init__()
+    self.hidden_size = hidden_size 
+    self input_size = input_size
+    
+    self.gru = nn.GRU(input_size, hidden_size, num_layers, batch_first=True)
+    self.fc = nn.Linear(hidden_size, output_size) 
+    
+    def forward(self, x):
+        #fill in code here
+        pass 
+        
