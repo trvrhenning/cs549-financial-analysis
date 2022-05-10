@@ -1,3 +1,6 @@
+#CS 549 Final Project, Financial Analysis, Group 23
+#This python file implements 3 non-sequential machine learning models on financial incidents from given csv file
+
 import csv
 import numpy as np
 import time
@@ -54,8 +57,7 @@ print("X_train resampled shape: {}".format(X_train_resample.shape))
 print("Y_train resampled shape: {}".format(Y_train_resample.shape))
 
 
-#Implement 3 Sci-kit Models and evaluate their performances Below 
-
+#Implement 3 Sci-kit Models and evaluate their performances Below
 start = time.time()
 
 #1. Logistic Regression
