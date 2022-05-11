@@ -37,13 +37,11 @@ def split_data(data_m, seq_len):
             idx+=1 
     for i in range(len(new_data_m)):
         if(new_data_m[i].shape[0] < seq_len):
-           # sequences.append(new_data_m[i])
-            x_seq.append(new_data_m[i][:,4:18])
-            y_seq.append(new_data_m[i][:,3])
+            x_seq.append(new_data_m[i][:,3:17])
+            y_seq.append(new_data_m[i][:,2])
         else:
-           # sequences.append(new_data_m[i][-seq_len:,:])
-            x_seq.append(new_data_m[i][:,4:18])
-            y_seq.append(new_data_m[i][:,3])
+            x_seq.append(new_data_m[i][-seq_len:,3:17])
+            y_seq.append(new_data_m[i][-seq_len:,2])
 
     x_data = np.array(x_seq , dtype = object)
     y_data = np.array(y_seq , dtype = object)
@@ -55,17 +53,10 @@ def split_data(data_m, seq_len):
     
     return x_train, y_train, x_test, y_test
 
-#list of numpy arrays seperated by company id each in length of chosen sequence lenght
-#new_data = np.array(split_data(data, 5), dtype = object)
-#test_size = int(np.round(0.3 * new_data.shape[0]))
-#train_data = new_data[:(new_data.shape[0] - test_size)]
-#test_data = new_data[(new_data.shape[0] - test_size):new_data.shape[0]]
-#print(f"Check train data shape: {train_data.shape}") #size should be amount of sequences
+max_sequence = 5 
+X_train, Y_train, X_test, Y_test = split_data(data, max_sequence)
+print(f"Check train data shape: {Y_train.shape}")
 
-#train_data[i].shape and test_data[i].shape = (samples_each_company(size of sequence length), features) 
-#features, 1-3 are company id year and target val, thus we dont wnat those in calculations for training
-
-X_train, Y_train, X_test, Y_test = split_data(data, 5)
 batch_size = 64
 input_size = 14
 hidden_size = 100 
