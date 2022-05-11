@@ -8,15 +8,12 @@ import pandas as pd
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 
-#First Load data from CSV File using pandas this time for ease of use with pytorch
+#First Load data 
 raw_data = pd.read_csv('targetfirm_prediction_dataset_small.csv')
-
-#Create a numpy array and extract X and Y 
 data = np.array(raw_data.values)
-#slice unneeded column
 data = data[:,1:data.shape[1]]
 
-#split data by company ID and then seperate into sequences, may need to remove last row for test data
+#Splits data by company Id and then by sequence length
 def split_data(data_m, seq_len):
     new_data_m = [ ]
     y_seq = [ ]
