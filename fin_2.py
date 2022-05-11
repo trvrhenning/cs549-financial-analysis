@@ -19,7 +19,6 @@ data = data[:,1:data.shape[1]]
 #split data by company ID and then seperate into sequences, may need to remove last row for test data
 def split_data(data_m, seq_len):
     new_data_m = [ ]
-    sequences = [ ]
     y_seq = [ ]
     x_seq = [ ]
     bucket = [20] 
@@ -46,10 +45,10 @@ def split_data(data_m, seq_len):
     x_data = np.array(x_seq , dtype = object)
     y_data = np.array(y_seq , dtype = object)
     test_size = int(np.round(0.3 * x_data.shape[0]))
-    x_train = x_data[:(x_data.shape[0] - test_size)]
-    y_train = y_data[:(y_data.shape[0] - test_size)]
-    x_test = x_data[(x_data.shape[0] - test_size):x_data.shape[0]] 
-    y_test = y_data[(y_data.shape[0] - test_size):y_data.shape[0]]
+    x_train = x_data[:-test_size]
+    y_train = y_data[:-test_size]
+    x_test = x_data[(x_data.shape[0] - test_size):] 
+    y_test = y_data[(y_data.shape[0] - test_size):]
     
     return x_train, y_train, x_test, y_test
 
