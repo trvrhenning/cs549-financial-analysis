@@ -1,6 +1,6 @@
 # CS 549 Final Project-Financial Incident Prediction Using Machine Learning:
 Contributors: 
-Trevor Henning, trvrhenning@gmail.com
+Trevor Henning, trvrhenning@gmail.com 
 Omid Hedayatnia, omid.hedayat7@gmail.com
 
 Given a data set this program will make predictions of financial incidents (specifically company acquisition) using multiple different machine learning models. 
