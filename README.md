@@ -2,6 +2,7 @@
 Contributors: 
 Trevor Henning, trvrhenning@gmail.com
 Omid Hedayatnia, omid.hedayat7@gmail.com
+
 Given a data set this program will make predictions of financial incidents (specifically company acquisition) using multiple different machine learning models. 
 ## Non sequential models 
 In the first python file, fin.py,  we tested and evaluated 3 different non sequential models on our data and used multiprocessing to speed up training and evaluation(speed change can be negligible depending on device). The models used are scikit learn's
