@@ -25,4 +25,5 @@ TO RUN THE PROGRAMS:
 1. From the command line cd into the directory where you stored the python files and data from this repository. 
 2. To run fin.py, type: python3 fin.py
 3. To run fin_2.py type: python3 fin_2.py
+
 Note: these programs may take a few minutes to run! 
