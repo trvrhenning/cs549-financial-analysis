@@ -7,53 +7,44 @@ import numpy as np
 import pandas as pd 
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
 
-#First Load data 
+#Load data and find positive labels for creating sequences  
 raw_data = pd.read_csv('targetfirm_prediction_dataset_small.csv')
 data = np.array(raw_data.values)
-data = data[:,1:data.shape[1]]
+data = data[:,1:]
+labels = data[:,2]
+pos_labels  = np.nonzero(labels)
+pos_labels = pos_labels[0]
+print(pos_labels.shape)
+print(pos_labels[0])
 
-#Splits data by company Id and then by sequence length
-def split_data(data_m, seq_len):
-    new_data_m = [ ]
-    y_seq = [ ]
-    x_seq = [ ]
-    bucket = [20] 
-    company_id = data_m[0,0]
-    idx = 0 
-    headidx = 0
-    while (idx <  data_m.shape[0]):
-        if (company_id == data_m[idx,0]):
-            idx+=1 
-        else:
-            company_id = data_m[idx,0]
-            new_data_m.append(data_m[headidx:idx,:]) 
-            headidx = idx
-            bucket.clear()
-            idx+=1 
-    for i in range(len(new_data_m)):
-        if(new_data_m[i].shape[0] < seq_len):
-            x_seq.append(new_data_m[i][:,3:17])
-            y_seq.append(new_data_m[i][:,2])
-        else:
-            x_seq.append(new_data_m[i][-seq_len:,3:17])
-            y_seq.append(new_data_m[i][-seq_len:,2])
+data_tensor = torch.FloatTensor(data)
 
-    x_data = np.array(x_seq , dtype = object)
-    y_data = np.array(y_seq , dtype = object)
-    test_size = int(np.round(0.3 * x_data.shape[0]))
-    x_train = x_data[:-test_size]
-    y_train = y_data[:-test_size]
-    x_test = x_data[(x_data.shape[0] - test_size):] 
-    y_test = y_data[(y_data.shape[0] - test_size):]
-    
-    return x_train, y_train, x_test, y_test
+print(data[:,1][1]>data[:,1][0])
+print(data[:,1][0])
 
+def split_data(data_m, seq_len, pos_labels):
+    seq = [ ]
+    for i in pos_labels:
+        curr_year = i
+        prev_year = curr_year - 1
+        count = 0 
+        while(data_m[:,1][curr_year] > data_m[:,1][prev_year] and count < seq_len):
+            curr_year-=1
+            prev_year = curr_year - 1
+            count+=1
+        seq.append((data_m[curr_year:i,3:17], data_m[i,2]))
+    test_size = int(np.round(0.3 * len(seq)))
+    train = seq[:-test_size]
+    test = seq[-test_size:]
+    return train, test 
+
+#some sequences are empty need to remove those!!
 max_sequence = 5 
-X_train, Y_train, X_test, Y_test = split_data(data, max_sequence)
-print(f"Check train data shape: {Y_train.shape}")
+train, test = split_data(data_tensor,max_sequence,pos_labels)
+print(f"Check train data shape: {train[0]}")
 
-batch_size = 64
 input_size = 14
 hidden_size = 100 
 num_layers = 2 
@@ -65,24 +56,50 @@ class LSTM(nn.Module):
         super(LSTM, self).__init__()
         self.hidden_size = hidden_size 
         self.input_size = input_size
+        self.num_layers = num_layers
     
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers)
         self.fc = nn.Linear(hidden_size, output_size)
-    
+        #h_cell = h0 and c0 combined 
+        self.h_cell = (torch.zeros(self.num_layers,1, self.hidden_size),torch.zeros(self.num_layers,1, self.hidden_size))
+        
     def forward(self,x): 
-        #fill in code here 
-        pass
-    
+        out, self.h_cell = self.lstm(x.view(len(x),1,-1),self.h_cell)
+        output = self.fc(out.view(len(x),-1))
+        return output[-1]
+       
 class GRU(nn.Module):
-    def __init__(self, input, hidden_size,num_layers, output_size):
+    def __init__(self, input_size, hidden_size ,num_layers, output_size):
         super(GRU, self).__init__()
         self.hidden_size = hidden_size 
         self.input_size = input_size
-    
-        self.gru = nn.GRU(input_size, hidden_size, num_layers, batch_first=True)
-        self.fc = nn.Linear(hidden_size, output_size) 
-    
-    def forward(self, x):
-        #fill in code here
-        pass 
+        self.num_layers = num_layers
         
+        self.gru = nn.GRU(input_size, hidden_size, num_layers)
+        self.fc = nn.Linear(hidden_size, output_size) 
+        self.h_cell = (torch.zeros(self.num_layers,1, self.hidden_size),torch.zeros(self.num_layers,1, self.hidden_size))
+    def forward(self, x):
+        out, self.h_cell = self.lstm(x.view(len(x),1,-1),self.h_cell)
+        output = self.fc(out.view(len(x),-1))
+        return output[-1]
+    
+
+def train_model(model, train_data,  num_epochs, print_every = 1000, learning_rate = 0.05):
+    model.train()
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), learning_rate)
+    for i in range(num_epochs):
+        for seq_m, labels in train_data:
+            optimizer.zero_grad()
+            model.h_cell = (torch.zeros(model.num_layers,1, model.hidden_size),torch.zeros(model.num_layers,1, model.hidden_size))
+            y_pred = model(seq_m)
+            loss = criterion(y_pred,labels)
+            loss.backward()
+            optimizer.step()
+            
+        if(i % print_every == 0 and i > 0):
+            print(f"Epoch:{i} loss: {loss.item():10.8f}")
+        print(f"Epoch {i} loss : {loss.item():10.10f}")
+
+lstm_model = LSTM(input_size = input_size, hidden_size = hidden_size, num_layers = num_layers, output_size = output_size)
+train_model(lstm_model, train, num_epochs)
