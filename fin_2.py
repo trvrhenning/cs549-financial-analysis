@@ -8,11 +8,12 @@ import pandas as pd
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
-
-#Load data and find positive labels for creating sequences  
+  
 raw_data = pd.read_csv('targetfirm_prediction_dataset_small.csv')
+raw_data = raw_data.fillna(0)
 data = np.array(raw_data.values)
 data = data[:,1:]
+
 labels = data[:,2]
 pos_labels  = np.nonzero(labels)
 pos_labels = pos_labels[0]
@@ -20,9 +21,6 @@ print(pos_labels.shape)
 print(pos_labels[0])
 
 data_tensor = torch.FloatTensor(data)
-
-print(data[:,1][1]>data[:,1][0])
-print(data[:,1][0])
 
 def split_data(data_m, seq_len, pos_labels):
     seq = [ ]
@@ -34,22 +32,22 @@ def split_data(data_m, seq_len, pos_labels):
             curr_year-=1
             prev_year = curr_year - 1
             count+=1
+        if(curr_year == i):
+            continue
         seq.append((data_m[curr_year:i,3:17], data_m[i,2]))
     test_size = int(np.round(0.3 * len(seq)))
     train = seq[:-test_size]
     test = seq[-test_size:]
     return train, test 
 
-#some sequences are empty need to remove those!!
 max_sequence = 5 
 train, test = split_data(data_tensor,max_sequence,pos_labels)
-print(f"Check train data shape: {train[0]}")
 
 input_size = 14
 hidden_size = 100 
 num_layers = 2 
 output_size = 1 
-num_epochs = 100 
+num_epochs = 10 
 
 class LSTM(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, output_size):
@@ -84,8 +82,9 @@ class GRU(nn.Module):
         return output[-1]
     
 
-def train_model(model, train_data,  num_epochs, print_every = 1000, learning_rate = 0.05):
+def train_model(model, model_type, train_data,  num_epochs, print_every = 1000, learning_rate = 0.05):
     model.train()
+    print("Training" + model_type + " model with" + num_epochs + " epochs:")
     criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), learning_rate)
     for i in range(num_epochs):
@@ -102,4 +101,7 @@ def train_model(model, train_data,  num_epochs, print_every = 1000, learning_rat
         print(f"Epoch {i} loss : {loss.item():10.10f}")
 
 lstm_model = LSTM(input_size = input_size, hidden_size = hidden_size, num_layers = num_layers, output_size = output_size)
-train_model(lstm_model, train, num_epochs)
+train_model(lstm_model, "LSTM", train, num_epochs)
+
+gru_model = GRU(input_size = input_size, hidden_size = hidden_size, num_layers = num_layers, output_size = output_size)
+train_model(gru_model, "GRU", train, num_epochs)
