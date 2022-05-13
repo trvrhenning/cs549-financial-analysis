@@ -75,22 +75,26 @@ class GRU(nn.Module):
         
         self.gru = nn.GRU(input_size, hidden_size, num_layers)
         self.fc = nn.Linear(hidden_size, output_size) 
-        self.h_cell = (torch.zeros(self.num_layers,1, self.hidden_size),torch.zeros(self.num_layers,1, self.hidden_size))
+        self.h_cell = torch.zeros(self.num_layers,1, self.hidden_size)
     def forward(self, x):
-        out, self.h_cell = self.lstm(x.view(len(x),1,-1),self.h_cell)
+        out, self.h_cell = self.gru(x.view(len(x),1,-1),self.h_cell)
         output = self.fc(out.view(len(x),-1))
         return output[-1]
     
 
 def train_model(model, model_type, train_data,  num_epochs, print_every = 1000, learning_rate = 0.05):
     model.train()
-    print("Training" + model_type + " model with" + num_epochs + " epochs:")
+    print(f"Training" + model_type + f" model with {num_epochs} epochs:")
     criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), learning_rate)
     for i in range(num_epochs):
         for seq_m, labels in train_data:
             optimizer.zero_grad()
-            model.h_cell = (torch.zeros(model.num_layers,1, model.hidden_size),torch.zeros(model.num_layers,1, model.hidden_size))
+            if (model_type == "LSTM"):
+                model.h_cell = (torch.zeros(model.num_layers,1, model.hidden_size),
+                                torch.zeros(model.num_layers,1, model.hidden_size))
+            else:
+                model.h_cell = torch.zeros(model.num_layers,1, model.hidden_size)
             y_pred = model(seq_m)
             loss = criterion(y_pred,labels)
             loss.backward()
