@@ -84,7 +84,7 @@ class GRU(nn.Module):
 
 def train_model(model, model_type, train_data,  num_epochs, print_every = 1000, learning_rate = 0.05):
     model.train()
-    print(f"Training" + model_type + f" model with {num_epochs} epochs:")
+    print("Training" + model_type + f" model with {num_epochs} epochs:")
     criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), learning_rate)
     for i in range(num_epochs):
