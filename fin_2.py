@@ -74,6 +74,7 @@ class GRU(nn.Module):
         self.gru = nn.GRU(input_size, hidden_size, num_layers)
         self.fc = nn.Linear(hidden_size, output_size) 
         self.h_cell = torch.zeros(self.num_layers,1, self.hidden_size)
+        
     def forward(self, x):
         out, self.h_cell = self.gru(x.view(len(x),1,-1),self.h_cell)
         output = self.fc(out.view(len(x),-1))
