@@ -13,6 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier  
 from imblearn.under_sampling import RandomUnderSampler
+from sklearn.metrics import f1_score
 
 def process_data():
     
@@ -53,6 +54,7 @@ def process_data():
     X_train_resample, Y_train_resample = rus.fit_resample(X_train, Y_train)
     print("X_train resampled shape: {}".format(X_train_resample.shape))
     print("Y_train resampled shape: {}".format(Y_train_resample.shape))
+    print("The data: ", data[0:6])
 
     return X_train_resample, Y_train_resample, X_test, Y_test
 
@@ -67,6 +69,7 @@ def log_reg_m(X_train_m,Y_train_m,X_test_m,Y_test_m):
     accuracy = l_reg.score(X_test_m, Y_test_m) 
     print("Confusion Matrix for Logistic Regression Model : \n{}".format(cm)) 
     print("Logistic Regression Model Accuracy : {0:.2%}".format(accuracy))
+    print("Logistic Regression Model F1 Score: ", f1_score(Y_test_m, y_pred, average=None))
 
 #2. SVM , this one may take some time to run
 def svm_m(X_train_m,Y_train_m,X_test_m,Y_test_m):
@@ -79,7 +82,8 @@ def svm_m(X_train_m,Y_train_m,X_test_m,Y_test_m):
     accuracy_1 = svm_model.score(X_test_m, Y_test_m)
     print("Confusion Matrix for SVM Model : \n{}".format(cm_1))
     print("SVM Model Accuracy : {0:.2%}".format(accuracy_1))
-    
+    print("SWM Model F1 Score: ", f1_score(Y_test_m, y_pred_1, average=None))
+
 #3. Feed forward Neural Network
 def nnet_m(X_train_m, Y_train_m, X_test_m, Y_test_m):
     mlp_model = MLPClassifier(max_iter = 1000) #Hidden layer default at (100,)
@@ -91,6 +95,7 @@ def nnet_m(X_train_m, Y_train_m, X_test_m, Y_test_m):
     accuracy_2 = mlp_model.score(X_test_m, Y_test_m)
     print("Confusion Matrix for Neural Network Model : \n{}".format(cm_2))
     print("Neural Network Model Accuracy : {0:.2%}".format(accuracy_2))
+    print("Neural Network Model F1 Score: ", f1_score(Y_test_m, y_pred_2, average=None))
     
 if __name__ == '__main__':
     X_train, Y_train, X_test, Y_test = process_data()
@@ -108,4 +113,4 @@ if __name__ == '__main__':
     p3.join()
     end = time.time()
     
-    print("Finished in {:.2f} seconds ".format(end - start))                      
+    print("Finished in {:.2f} seconds ".format(end - start))     
