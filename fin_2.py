@@ -17,8 +17,6 @@ data = data[:,1:]
 labels = data[:,2]
 pos_labels  = np.nonzero(labels)
 pos_labels = pos_labels[0]
-print(pos_labels.shape)
-print(pos_labels[0])
 
 data_tensor = torch.FloatTensor(data)
 
@@ -58,8 +56,8 @@ class LSTM(nn.Module):
     
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers)
         self.fc = nn.Linear(hidden_size, output_size)
-        #h_cell = h0 and c0 combined 
-        self.h_cell = (torch.zeros(self.num_layers,1, self.hidden_size),torch.zeros(self.num_layers,1, self.hidden_size))
+        self.h_cell = (torch.zeros(self.num_layers,1, self.hidden_size),
+                       torch.zeros(self.num_layers,1, self.hidden_size))
         
     def forward(self,x): 
         out, self.h_cell = self.lstm(x.view(len(x),1,-1),self.h_cell)
@@ -81,7 +79,6 @@ class GRU(nn.Module):
         output = self.fc(out.view(len(x),-1))
         return output[-1]
     
-
 def train_model(model, model_type, train_data,  num_epochs, print_every = 1000, learning_rate = 0.05):
     model.train()
     print("Training" + model_type + f" model with {num_epochs} epochs:")
