@@ -76,6 +76,9 @@ def log_reg_m(X_train_m,Y_train_m,X_test_m,Y_test_m):
     y_pred_proba = l_reg.predict_proba(X_test_m)[::,1]
     fpr, tpr, _ = roc_curve(Y_test_m2, y_pred_proba)
     plt.plot(fpr, tpr)
+    plt.title("Logistic Regression Model ROC Curve")
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
     plt.show()
 
 #2. SVM , this one may take some time to run
@@ -90,7 +93,7 @@ def svm_m(X_train_m,Y_train_m,X_test_m,Y_test_m):
     accuracy_1 = svm_model.score(X_test_m, Y_test_m)
     print("Confusion Matrix for SVM Model : \n{}".format(cm_1))
     print("SVM Model Accuracy : {0:.2%}".format(accuracy_1))
-    print("SWM Model F1 Score: ", f1_score(Y_test_m, y_pred_1, average=None))
+    print("SVM Model F1 Score: ", f1_score(Y_test_m, y_pred_1, average=None))
     Y_test_m2 = '1' <= Y_test_m
     #y_pred_proba = svm_model.predict_proba(X_test_m)[::,1]
     y_pred_proba = svm_model.predict_proba(X_test_m)[:,1]
