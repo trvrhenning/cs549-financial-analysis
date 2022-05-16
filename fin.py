@@ -56,7 +56,6 @@ def process_data():
     X_train_resample, Y_train_resample = rus.fit_resample(X_train, Y_train)
     print("X_train resampled shape: {}".format(X_train_resample.shape))
     print("Y_train resampled shape: {}".format(Y_train_resample.shape))
-    print("The data: ", data[0:6])
 
     return X_train_resample, Y_train_resample, X_test, Y_test
 
@@ -73,7 +72,7 @@ def log_reg_m(X_train_m,Y_train_m,X_test_m,Y_test_m):
     print("Logistic Regression Model Accuracy : {0:.2%}".format(accuracy))
     print("Logistic Regression Model F1 Score: ", f1_score(Y_test_m, y_pred, average=None))
     Y_test_m2 = '1' <= Y_test_m
-    y_pred_proba = l_reg.predict_proba(X_test_m)[::,1]
+    y_pred_proba = l_reg.predict_proba(X_test_m)[:,1]
     fpr, tpr, _ = roc_curve(Y_test_m2, y_pred_proba)
     plt.plot(fpr, tpr)
     plt.title("Logistic Regression Model ROC Curve")
@@ -127,17 +126,17 @@ def nnet_m(X_train_m, Y_train_m, X_test_m, Y_test_m):
     
 if __name__ == '__main__':
     X_train, Y_train, X_test, Y_test = process_data()
-    #p1 = mp.Process(target = log_reg_m, args = (X_train, Y_train, X_test, Y_test))
-    #p2 = mp.Process(target = svm_m, args = (X_train, Y_train, X_test, Y_test))
+    p1 = mp.Process(target = log_reg_m, args = (X_train, Y_train, X_test, Y_test))
+    p2 = mp.Process(target = svm_m, args = (X_train, Y_train, X_test, Y_test))
     p3 = mp.Process(target = nnet_m, args = (X_train, Y_train, X_test, Y_test))
     
     start = time.time()
-    #p1.start()
-    #p2.start()
+    p1.start()
+    p2.start()
     p3.start()
     
-    #p1.join()
-    #p2.join()
+    p1.join()
+    p2.join()
     p3.join()
     end = time.time()
     
